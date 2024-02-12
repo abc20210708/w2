@@ -1,6 +1,7 @@
 package org.zerock.w2.controller;
 
 import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/login")
-@Log
+@Log4j2
 public class LoginController extends HttpServlet {
 
     @Override
