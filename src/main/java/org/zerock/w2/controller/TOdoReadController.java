@@ -6,6 +6,7 @@ import org.zerock.w2.service.TodoService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,5 +34,27 @@ public class TOdoReadController extends HttpServlet {
             log.error(e.getMessage());
             throw new ServletException("read error");
         }
+    }
+
+    private Cookie findCookie(Cookie[] cookies, String cookieName) {
+
+        Cookie targetCookie = null;
+
+        if (cookies != null && cookies.length > 0) {
+            for(Cookie ck:cookies) {
+                if (ck.getName().equals(cookieName)){
+                    targetCookie = ck;
+                    break;
+                }
+            }
+        }
+
+        if (targetCookie == null) {
+            targetCookie = new Cookie(cookieName, "");
+            targetCookie.setPath("/");
+            targetCookie.setMaxAge(60*60*24);
+        }
+
+        return targetCookie;
     }
 }
