@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @WebServlet(name = "todoReadController", value = "/todo/read")
 @Log4j2
-public class TOdoReadController extends HttpServlet {
+public class TodoReadController extends HttpServlet {
 
     private TodoService todoService = TodoService.INSTANCE;
 
@@ -28,9 +28,29 @@ public class TOdoReadController extends HttpServlet {
             // 데이터 담기
             req.setAttribute("dto", todoDTO);
 
+            // 쿠키 찾기
+            Cookie viewTodoCookie = findCookie(req.getCookies(), "viewTodos");
+            String todoListStr = viewTodoCookie.getValue();
+            boolean exist = false;
+
+            if (todoListStr != null && todoListStr.indexOf(tno+"-") >= 0) {
+                exist = true;
+            }
+
+            log.info("exist: " + exist);
+
+            if (!exist) {
+                todoListStr += tno+ "-";
+                viewTodoCookie.setValue(todoListStr);
+                viewTodoCookie.setMaxAge(60*60*24);
+                viewTodoCookie.setPath("/");
+                resp.addCookie(viewTodoCookie);
+            }
+
             req.getRequestDispatcher("/WEB-INF/todo/read.jsp").forward(req, resp);
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(e.getMessage());
             throw new ServletException("read error");
         }
