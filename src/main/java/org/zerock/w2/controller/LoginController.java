@@ -34,6 +34,7 @@ public class LoginController extends HttpServlet {
         String mpw = req.getParameter("mpw");
 
         String auto = req.getParameter("auto");
+
         boolean rememberMe = auto != null && auto.equals("on");
 
         if (rememberMe) {
@@ -42,6 +43,14 @@ public class LoginController extends HttpServlet {
 
         try {
             MemberDTO memberDTO = MemberService.INSTANCE.login(mid, mpw);
+
+            if (rememberMe) {
+                String uuid = UUID.randomUUID().toString();
+
+                MemberService.INSTANCE.updateUuid(mid, uuid);
+                memberDTO.setUuid(uuid);
+            }
+
             HttpSession session = req.getSession();
             session.setAttribute("loginInfo", memberDTO);
             resp.sendRedirect("/todo/list");
