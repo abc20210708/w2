@@ -48,4 +48,27 @@ public class MemberDAO {
         preparedStatement.setString(2, mid);
         preparedStatement.executeUpdate();
     }
+
+    public MemberVo selectUUID(String uuid) throws Exception {
+
+        String query = "select mid, mpw, mname, uuid from tbl_member where uuid =?";
+
+        @Cleanup Connection connection = ConnectionUtil.INSTANCE.getConnection();
+        @Cleanup PreparedStatement preparedStatement =
+                connection.prepareStatement(query);
+        preparedStatement.setString(1, uuid);
+
+        @Cleanup ResultSet resultSet = preparedStatement.executeQuery();
+
+        resultSet.next();
+
+        MemberVo memberVo = MemberVo.builder()
+                .mid(resultSet.getString(1))
+                .mpw(resultSet.getString(2))
+                .mname(resultSet.getString(3))
+                .uuid(resultSet.getString(4))
+                .build();
+
+        return memberVo;
+    }
 }
